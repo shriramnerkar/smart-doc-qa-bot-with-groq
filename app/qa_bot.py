@@ -1,9 +1,11 @@
-# app/qa_bot.py
-from .utils import extract_text_from_pdf
-from .llm_groq import ask_llm
+import io
+from app.utils import extract_text_from_pdf
+from app.llm_groq import ask_llm
 
-def generate_answer(file, user_question: str):
-    pdf_text = extract_text_from_pdf(file)
+def generate_answer(file_bytes: bytes, user_question: str):
+    file_stream = io.BytesIO(file_bytes)
+    pdf_text = extract_text_from_pdf(file_stream)
+
     prompt = f"""You are an expert assistant. Based on the following document:
 ---
 {pdf_text}
