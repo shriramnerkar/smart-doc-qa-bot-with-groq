@@ -1,6 +1,7 @@
-flask
+fastapi
+uvicorn
+pypdf
 langchain
-openai
-faiss-cpu
-PyMuPDF
-python-dotenv
+tiktoken
+requests
+python-multipart
