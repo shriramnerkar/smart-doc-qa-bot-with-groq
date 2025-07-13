@@ -1,23 +1,25 @@
-import streamlit as st
-from app.rag_pipeline import load_and_chunk_pdf, embed_and_store, create_qa_chain
-from app.utils import save_uploaded_file
+from flask import Flask, render_template, request
+from app.qa_bot import load_and_prepare_doc, get_qa_chain
+import os
 
-st.set_page_config(page_title="Smart Doc QA Bot", layout="centered")
-st.title("📄 Smart Document QA Bot")
+app = Flask(__name__)
+UPLOAD_FOLDER = "app/uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-uploaded_file = st.file_uploader("Upload a PDF document", type=["pdf"])
+@app.route("/", methods=["GET", "POST"])
+def index():
+    answer = ""
+    if request.method == "POST":
+        question = request.form["question"]
+        file = request.files["document"]
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+        file.save(filepath)
 
-if uploaded_file:
-    file_path = save_uploaded_file(uploaded_file)
-    with st.spinner("🔍 Processing document..."):
-        chunks = load_and_chunk_pdf(file_path)
-        vs = embed_and_store(chunks)
-        qa = create_qa_chain(vs)
-        st.success("✅ Document ready for QA")
+        chunks = load_and_prepare_doc(filepath)
+        qa_chain = get_qa_chain(chunks)
+        answer = qa_chain.run(question)
 
-    question = st.text_input("Ask a question about your document")
-    if question:
-        with st.spinner("🤖 Thinking..."):
-            answer = qa.run(question)
-            st.markdown("**💬 Answer:**")
-            st.info(answer)
+    return render_template("index.html", answer=answer)
+
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -1,13 +1,10 @@
 @echo off
-REM Activate virtual environment and run both FastAPI and Streamlit
+REM Activate your virtual environment (if any)
+REM call venv\Scripts\activate
 
-echo 🔄 Activating virtual environment...
-call .venv\Scripts\activate
-
-echo 🚀 Starting FastAPI backend on port 8000...
-start cmd /k "uvicorn app.api:app --host 0.0.0.0 --port 8000"
-
-echo 🌐 Launching Streamlit frontend on port 8501...
-streamlit run main.py
+echo Starting Smart Document QA Bot...
+set FLASK_APP=app/main.py
+set FLASK_ENV=development
+flask run
 
 pause

@@ -1,4 +1,6 @@
 flask
-transformers
-torch
+langchain
+openai
+faiss-cpu
+PyMuPDF
 python-dotenv
