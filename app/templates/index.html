@@ -4,23 +4,25 @@
     <title>Smart Document QA Bot</title>
 </head>
 <body>
-    <h1>Smart Document QA Bot 🤖📄</h1>
+    <h1>📄 Smart Document QA Bot</h1>
     <form id="qaForm" enctype="multipart/form-data">
         <label>Upload PDF: <input type="file" name="file" required></label><br><br>
-        <label>Question: <input type="text" name="question" required></label><br><br>
+        <label>Ask a question: <input type="text" name="question" required></label><br><br>
         <button type="submit">Ask</button>
     </form>
     <h2>Answer:</h2>
-    <pre id="answerBox"></pre>
+    <pre id="answerBox">Waiting...</pre>
 
     <script>
         document.getElementById("qaForm").onsubmit = async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+
             const response = await fetch("/ask", {
                 method: "POST",
                 body: formData
             });
+
             const result = await response.json();
             document.getElementById("answerBox").textContent = result.answer || result.error;
         };
